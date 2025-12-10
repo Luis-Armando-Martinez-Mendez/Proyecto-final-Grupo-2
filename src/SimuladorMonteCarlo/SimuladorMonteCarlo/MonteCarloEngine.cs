@@ -3,10 +3,90 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
-namespace SimuladorMonteCarlo
+namespace MonteCarloSim
 {
-    internal class MonteCarloEngine
+    public class MonteCarloEngine
     {
+        // Método Paralelo Inicial
+        public SimulationResults EjecutarSimulacion(SimulationParameters param)
+        {
+            if (param.DiasTotales < 1) throw new Exception("Días insuficientes.");
+
+            double[][] resultados = new double[param.NumeroSimulaciones][];
+            Stopwatch sw = Stopwatch.StartNew();
+
+            var opcionesParalelas = new ParallelOptions { MaxDegreeOfParallelism = param.Hilos };
+
+            Parallel.For(0, param.NumeroSimulaciones, opcionesParalelas, i =>
+            {
+                Random azar = new Random(Guid.NewGuid().GetHashCode());
+                double[] trayectoria = new double[param.DiasTotales];
+                double precioActual = param.CapitalInicial;
+                trayectoria[0] = precioActual;
+
+                for (int dia = 1; dia < param.DiasTotales; dia++)
+                {
+                    double u1 = 1.0 - azar.NextDouble();
+                    double u2 = 1.0 - azar.NextDouble();
+                    double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
+
+                    double cambio = param.DerivaDiaria + (param.VolatilidadDiaria * randStdNormal);
+                    precioActual = precioActual * (1 + cambio);
+                   
+                    if (precioActual < 0) precioActual = 0;
+                    if (precioActual > param.CapitalInicial * 1000000) precioActual = param.CapitalInicial * 1000000;
+
+                    trayectoria[dia] = precioActual;
+                }
+                resultados[i] = trayectoria;
+            });
+
+            sw.Stop();
+
+            double[] finales = resultados.Select(r => r[param.DiasTotales - 1]).ToArray();
+            Array.Sort(finales);
+
+            return new SimulationResults
+            {
+                Trayectorias = resultados,
+                TiempoEjecucionMs = sw.ElapsedMilliseconds,
+                HilosUsados = param.Hilos,
+                PreciosFinales = finales
+            };
+        }
+        // --- NUEVO: Método Secuencial para Benchmarking ---
+        public long EjecutarSimulacionSecuencial(SimulationParameters param)
+        {
+            Stopwatch sw = Stopwatch.StartNew();
+
+            // Bucle FOR normal (1 solo hilo)
+            for (int i = 0; i < param.NumeroSimulaciones; i++)
+            {
+                // Instanciamos Random aquí para replicar la carga exacta del paralelo (fair benchmark)
+                Random azar = new Random(Guid.NewGuid().GetHashCode());
+                double precioActual = param.CapitalInicial;
+
+                for (int dia = 1; dia < param.DiasTotales; dia++)
+                {
+                    double u1 = 1.0 - azar.NextDouble();
+                    double u2 = 1.0 - azar.NextDouble();
+                    double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
+
+                    double cambio = param.DerivaDiaria + (param.VolatilidadDiaria * randStdNormal);
+                    precioActual = precioActual * (1 + cambio);
+
+                    if (precioActual < 0) precioActual = 0;
+                    if (precioActual > param.CapitalInicial * 1000000) precioActual = param.CapitalInicial * 1000000;
+
+                    // Nota: No guardamos en array gigante para no saturar RAM en el test de velocidad puro,
+                    // nos interesa medir CPU pura.
+                }
+            }
+
+            sw.Stop();
+            return sw.ElapsedMilliseconds; // Tiempo Secuencial (Ts)
+        }
     }
 }
