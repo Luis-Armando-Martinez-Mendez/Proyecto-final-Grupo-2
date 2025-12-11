@@ -34,8 +34,9 @@ namespace MonteCarloSim
 
                     double cambio = param.DerivaDiaria + (param.VolatilidadDiaria * randStdNormal);
                     precioActual = precioActual * (1 + cambio);
-
-                    // NOTA: Aquí faltan las validaciones de límites
+                   
+                    if (precioActual < 0) precioActual = 0;
+                    if (precioActual > param.CapitalInicial * 1000000) precioActual = param.CapitalInicial * 1000000;
 
                     trayectoria[dia] = precioActual;
                 }
