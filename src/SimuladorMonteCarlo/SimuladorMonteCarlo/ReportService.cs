@@ -21,6 +21,18 @@ namespace MonteCarloSim
             double valorRealFinal = promedioFinal / (1 + inflacionAcumulada); 
             // Esta es la ganancia real, la que vale
             double gananciaReal = valorRealFinal - param.CapitalInicial; 
+
+            // Codgio para sacar el VaR de un 95%
+            // Buscamos el indice del peor 5% de los casos
+            int indice5Percentil = (int)(param.NumeroSimulaciones * 0.05); 
+            double valorEnRiesgo95 = res.PreciosFinales[indice5Percentil];
+            // El VaR es lo maximo que podemos perder con el 95%
+            double VaR = param.CapitalInicial - valorEnRiesgo95; 
+            if (VaR < 0) VaR = 0; // El VaR no debe ser negativo
+
+            // Tasa Segura
+            // Calculamos cuanto crece el capital en una inversión sin riesgo
+            double valorSeguroFinal = param.CapitalInicial * Math.Pow(1 + param.TasaLibreDiaria, param.DiasTotales);
         }
     }
 }
