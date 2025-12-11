@@ -39,11 +39,18 @@ namespace MonteCarloSim
             void Print(string text, Color c, bool bold = false)
             {
                 rtb.SelectionColor = c;
-                // Definimos la fuente y si va en negrita
+                // Definimos la fuente y la ponemos en negrita
                 rtb.SelectionFont = new Font("Consolas", 9, bold ? FontStyle.Bold : FontStyle.Regular); 
                 rtb.AppendText(text); // Agregamos el texto al control
             }
             void PrintLn(string text, Color c, bool bold = false) => Print(text + "\n", c, bold); // Agregamos un salto de línea al final para que no esté todo pegado
+            
+            // --- Parte del rendimiento ---
+            PrintLn("=== BENCHMARK DE PARALELISMO ===", Color.Black, true); // El titulo 
+            // Mostramos el tiempo sin paralelismo (usamoe un solo un CPU)
+            Print("Tiempo Secuencial (1 CPU): ", Color.Black); PrintLn($"{tiempoSecuencialMs} ms", Color.DarkRed);
+            // Mostramos el tiempo real que se logro usando el paralelismo
+            Print("Tiempo Paralelo (" + res.HilosUsados + " CPUs): ", Color.Black); PrintLn($"{res.TiempoEjecucionMs} ms", Color.Blue, true);
         }
     }
 }
