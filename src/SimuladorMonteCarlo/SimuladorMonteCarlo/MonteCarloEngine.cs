@@ -56,5 +56,37 @@ namespace MonteCarloSim
                 PreciosFinales = finales
             };
         }
+        // --- NUEVO: Método Secuencial para Benchmarking ---
+        public long EjecutarSimulacionSecuencial(SimulationParameters param)
+        {
+            Stopwatch sw = Stopwatch.StartNew();
+
+            // Bucle FOR normal (1 solo hilo)
+            for (int i = 0; i < param.NumeroSimulaciones; i++)
+            {
+                // Instanciamos Random aquí para replicar la carga exacta del paralelo (fair benchmark)
+                Random azar = new Random(Guid.NewGuid().GetHashCode());
+                double precioActual = param.CapitalInicial;
+
+                for (int dia = 1; dia < param.DiasTotales; dia++)
+                {
+                    double u1 = 1.0 - azar.NextDouble();
+                    double u2 = 1.0 - azar.NextDouble();
+                    double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
+
+                    double cambio = param.DerivaDiaria + (param.VolatilidadDiaria * randStdNormal);
+                    precioActual = precioActual * (1 + cambio);
+
+                    if (precioActual < 0) precioActual = 0;
+                    if (precioActual > param.CapitalInicial * 1000000) precioActual = param.CapitalInicial * 1000000;
+
+                    // Nota: No guardamos en array gigante para no saturar RAM en el test de velocidad puro,
+                    // nos interesa medir CPU pura.
+                }
+            }
+
+            sw.Stop();
+            return sw.ElapsedMilliseconds; // Tiempo Secuencial (Ts)
+        }
     }
 }
