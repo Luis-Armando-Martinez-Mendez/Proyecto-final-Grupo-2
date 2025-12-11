@@ -33,6 +33,17 @@ namespace MonteCarloSim
             // Tasa Segura
             // Calculamos cuanto crece el capital en una inversión sin riesgo
             double valorSeguroFinal = param.CapitalInicial * Math.Pow(1 + param.TasaLibreDiaria, param.DiasTotales);
+            
+            // --- Helpers para imprimir con colores ---
+            // Aqui lo que lo ponemos es mas bonito
+            void Print(string text, Color c, bool bold = false)
+            {
+                rtb.SelectionColor = c;
+                // Definimos la fuente y si va en negrita
+                rtb.SelectionFont = new Font("Consolas", 9, bold ? FontStyle.Bold : FontStyle.Regular); 
+                rtb.AppendText(text); // Agregamos el texto al control
+            }
+            void PrintLn(string text, Color c, bool bold = false) => Print(text + "\n", c, bold); // Agregamos un salto de línea al final para que no esté todo pegado
         }
     }
 }
