@@ -62,3 +62,63 @@ public void DibujarTrayectorias(Chart chart, SimulationResults res, SimulationPa
 
     chart.Series.ResumeUpdates();
 }
+
+// --- Histograma ---
+public void DibujarHistograma(Chart chart, double[] preciosFinales)
+{
+    chart.Series.Clear();
+
+    Series sHist = new Series("Frecuencia")
+    {
+        ChartType = SeriesChartType.Column,
+        Color = Color.CornflowerBlue
+    };
+
+    double min = preciosFinales.Min();
+    double max = preciosFinales.Max();
+
+    int numBins = 20;
+    double anchoBin = (max - min) / numBins;
+
+    int[] frecuencias = new int[numBins];
+
+    foreach (double valor in preciosFinales)
+    {
+        int indice = (int)((valor - min) / anchoBin);
+        if (indice >= numBins) indice = numBins - 1;
+        frecuencias[indice]++;
+    }
+
+    for (int i = 0; i < numBins; i++)
+    {
+        double rangoInicio = min + (i * anchoBin);
+        sHist.Points.AddXY(Math.Round(rangoInicio, 0), frecuencias[i]);
+    }
+
+    chart.Series.Add(sHist);
+}
+
+// --- Pastel ---
+public void DibujarPastel(Chart chart, double[] preciosFinales, double capitalInicial)
+{
+    chart.Series.Clear();
+
+    int ganaron = preciosFinales.Count(v => v > capitalInicial);
+    int perdieron = preciosFinales.Length - ganaron;
+
+    Series sPie = new Series("Probabilidad")
+    {
+        ChartType = SeriesChartType.Pie
+    };
+
+    sPie.Points.AddXY("Ganancia", ganaron);
+    sPie.Points.AddXY("Pérdida", perdieron);
+
+    sPie.Points[0].Color = Color.LightGreen;
+    sPie.Points[0].Label = $"Ganancia\n#PERCENT";
+
+    sPie.Points[1].Color = Color.Salmon;
+    sPie.Points[1].Label = $"Pérdida\n#PERCENT";
+
+    chart.Series.Add(sPie);
+}
