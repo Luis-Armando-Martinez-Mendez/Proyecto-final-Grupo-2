@@ -51,6 +51,24 @@ namespace MonteCarloSim
             Print("Tiempo Secuencial (1 CPU): ", Color.Black); PrintLn($"{tiempoSecuencialMs} ms", Color.DarkRed);
             // Mostramos el tiempo real que se logro usando el paralelismo
             Print("Tiempo Paralelo (" + res.HilosUsados + " CPUs): ", Color.Black); PrintLn($"{res.TiempoEjecucionMs} ms", Color.Blue, true);
+            
+            // Añadimos el Speedup
+            // Evitamos dividir por cero si el tiempo es cero (lo forzamos a 1ms)
+            double tParalelo = res.TiempoEjecucionMs > 0 ? res.TiempoEjecucionMs : 1; 
+            // Calculamos la velocidad que corrio el codigo paralelo vs secuencial
+            double speedup = (double)tiempoSecuencialMs / tParalelo; 
+            double eficiencia = speedup / res.HilosUsados; // Calculamos el aprovechamiento de los hilos
+
+            Print("Speedup: ", Color.Black); PrintLn($"{speedup:F2}x", Color.DarkGreen, true);
+            Print("Eficiencia: ", Color.Black); PrintLn($"{eficiencia:P1}", Color.Gray);
+
+            // Potencia de Calculo
+            double segundos = tParalelo / 1000.0; // Aqui paasamos de milisegundos a segundos
+            // Calculamos la capacidad de cuantas simulaciones hace poor segundo
+            double simPorSegundo = param.NumeroSimulaciones / segundos; 
+            Print("Potencia de Calculo: ", Color.Black); PrintLn($"{simPorSegundo:N0} sim/seg", Color.Purple, true);
+
+            PrintLn("----------------------------", Color.Black);
         }
     }
 }
