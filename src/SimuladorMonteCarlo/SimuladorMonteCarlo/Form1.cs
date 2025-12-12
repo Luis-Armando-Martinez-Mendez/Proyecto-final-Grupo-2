@@ -8,7 +8,7 @@ namespace MonteCarloSim
 {
     public partial class Form1 : Form
     {
-        //private MonteCarloEngine engine = new MonteCarloEngine();
+        private MonteCarloEngine engine = new MonteCarloEngine();
         //private ChartService grafico = new ChartService();
         //private ReportService reporte = new ReportService();
 
