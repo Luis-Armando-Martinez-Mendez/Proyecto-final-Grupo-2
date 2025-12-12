@@ -69,6 +69,53 @@ namespace MonteCarloSim
             Print("Potencia de Calculo: ", Color.Black); PrintLn($"{simPorSegundo:N0} sim/seg", Color.Purple, true);
 
             PrintLn("----------------------------", Color.Black);
+
+            // --- Parte financiera ---
+            PrintLn("RESULTADOS FINANCIEROS:", Color.Black, true); // Titulo
+            Print("Capital Final (Nom): ", Color.Black); PrintLn($"${promedioFinal:N2}", Color.Blue, true);
+            Print("Ganancia Nominal: ", Color.Black); 
+            // Ponemos la ganancia en verde su es positiva o en rojo si es negativa
+            PrintLn($"${gananciaNominal:N2}", gananciaNominal >= 0 ? Color.Green : Color.Red); 
+
+            // Calculamos cuanto se pierde
+            double perdidaPoderCompra = gananciaNominal - gananciaReal;
+            Print("Efecto Inflación: ", Color.Black);
+            PrintLn($"Tu dinero vale -${perdidaPoderCompra:N2} menos hoy.", Color.DarkOrange);
+
+            Print("GANANCIA REAL: ", Color.Black, true);
+            PrintLn($"${gananciaReal:N2}", gananciaReal >= 0 ? Color.Green : Color.Red, true);
+
+            PrintLn("----------------------------", Color.Black);
+            
+            // --- Parte del riesgo y la decision ---
+            PrintLn("ANÁLISIS DE DECISIÓN:", Color.Black, true);
+
+            // Calculamos la diferencia contra la inversión segura
+            double diferencia = promedioFinal - valorSeguroFinal; 
+            // Aqui convertimos el VaR a un porcentaje para las conclusiones
+            double porcentajeVaR = (VaR / param.CapitalInicial) * 100; 
+
+            Print("vs Banco (Seguro): ", Color.Black);
+            if (diferencia > 0)
+            {
+                PrintLn($"Ganas +${diferencia:N2} extra", Color.Green, true);
+                Print("Conclusión: ", Color.Black);
+                // Damos una conclusión basada en el riesgo que viene a ser el VaR
+                if (porcentajeVaR > 40) PrintLn("⚠️ MUY ESPECULATIVO", Color.Red, true);
+                else if (porcentajeVaR > 20) PrintLn("⚠️ ALTO RIESGO / ALTO RETORNO", Color.DarkOrange, true);
+                else PrintLn("✅ EXCELENTE INVERSIÓN", Color.DarkGreen, true);
+            }
+            else
+            {
+                PrintLn($"Pierdes -${Math.Abs(diferencia):N2}", Color.Red, true);
+                Print("Conclusión: ", Color.Black);
+                PrintLn("❌ NO VALE LA PENA (Mejor Banco)", Color.Red, true);
+            }
+
+            PrintLn("", Color.Black);
+            Print("Riesgo Extremo (VaR 95%): ", Color.DarkRed, true);
+            // Por ultimo imprimimos el VaR en dinero y como porcentaje
+            PrintLn($"${VaR:N2} ({porcentajeVaR:F1}%)", Color.Red);
         }
     }
 }
