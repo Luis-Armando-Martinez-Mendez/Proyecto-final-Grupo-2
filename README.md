@@ -54,8 +54,9 @@ El sistema utiliza una arquitectura modular basada en la Separación de Responsa
 ### Ejecución
 
 1.  Clonar el repositorio.
-2.  Abrir la solución (`monte_carloprueba.sln`) en Visual Studio.
-3.  Ejecutar la aplicación (`F5`).
+2.  **Instalar Librería:** Asegurarse de tener la librería System.Windows.Forms.DataVisualization instalada, ya que es necesaria para los gráficos.
+3.  Abrir el archivo (`Form1.cs`) en Visual Studio.
+4.  Ejecutar la aplicación (`F5`).
 
 ```text
 Co-authored-by: <Emill Peralta>
