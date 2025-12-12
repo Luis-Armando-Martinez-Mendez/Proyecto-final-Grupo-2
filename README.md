@@ -1,17 +1,17 @@
-# 🚀 Simulador de Riesgo Financiero Monte Carlo Paralelo (Grupo #2)
+# Simulador de Riesgo Financiero Monte Carlo Paralelo (Grupo #2)
 
 [![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=c-sharp&logoColor=white)](https://dotnet.microsoft.com/)
 [![.NET](https://img.shields.io/badge/.NET-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
 [![Windows Forms](https://img.shields.io/badge/Windows_Forms-0078D6?style=for-the-badge&logo=microsoft&logoColor=white)](https://docs.microsoft.com/en-us/dotnet/desktop/winforms/)
 [![Programación Paralela](https://img.shields.io/badge/Paralelismo-TPL-9C27B0?style=for-the-badge&logo=cplusplus&logoColor=white)](https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/)
 
-## 📝 Descripción General
+## Descripción General
 
 Este proyecto implementa un **Simulador de Riesgo Financiero** utilizando el método de **Monte Carlo** y el modelo de **Movimiento Browniano Geométrico (GBM)**.
 
 El enfoque técnico principal es la **Programación Paralela (Data Parallelism)**, que nos permite distribuir miles de simulaciones de forma simultánea entre los núcleos de la CPU. Esto resulta en un sistema que puede ejecutar análisis complejos de riesgo y retorno **casi al instante**, con alta escalabilidad y eficiencia, demostrando la potencia de la TPL de .NET.
 
-## ✨ Características Técnicas Clave
+## Características Técnicas Clave
 
 | Característica | Implementación Técnica | Beneficio |
 | :--- | :--- | :--- |
@@ -22,7 +22,7 @@ El enfoque técnico principal es la **Programación Paralela (Data Parallelism)*
 
 ---
 
-## 👥 Equipo del Proyecto
+## Equipo del Proyecto
 
 Este proyecto fue desarrollado en conjunto para la materia de Programación Paralela.
 
@@ -35,7 +35,7 @@ Este proyecto fue desarrollado en conjunto para la materia de Programación Para
 
 ---
 
-## 🛠️ Estructura y Componentes Principales
+## Estructura y Componentes Principales
 
 El sistema utiliza una arquitectura modular basada en la Separación de Responsabilidades:
 
@@ -50,7 +50,7 @@ El sistema utiliza una arquitectura modular basada en la Separación de Responsa
 
 ## Flujo de Trabajo y Contribución
 
-### ⚙️ Ejecución
+### Ejecución
 
 1.  Clonar el repositorio.
 2.  Abrir la solución (`monte_carloprueba.sln`) en Visual Studio.
