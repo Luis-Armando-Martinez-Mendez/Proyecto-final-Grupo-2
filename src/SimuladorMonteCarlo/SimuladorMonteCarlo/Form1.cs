@@ -1,4 +1,3 @@
-using SimuladorMonteCarlo;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -25,8 +24,40 @@ namespace MonteCarloSim
 
         public Form1()
         {
-            //InitializeComponent();
-            //ConstruirInterfaz();
+            InitializeComponent();
+            ConstruirInterfaz();
+        }
+
+        private void BtnSimular_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var param = LeerParametrosUI();
+
+                //Metodo secuencial
+                rtbResultados.Text = "Calculando base secuencial (1 nucleo)...";
+                rtbResultados.Refresh();
+                long tiempoSecuencial = engine.EjecutarSimulacionSecuencial(param);
+
+                //Paralelismo
+                rtbResultados.Text = $"Simulando en paralelo ({param.Hilos} núcleos)...";
+                rtbResultados.Refresh();
+
+                var resultados = engine.EjecutarSimulacion(param);
+
+                //Reportes
+                reporte.GenerarReporte(rtbResultados, resultados, param, tiempoSecuencial);
+
+                //Graficos
+                grafico.DibujarTrayectorias(chartLineas, resultados, param);
+                grafico.DibujarHistograma(chartHistograma, resultados.PreciosFinales);
+                grafico.DibujarPastel(chartPastel, resultados.PreciosFinales, param.CapitalInicial);
+                grafico.DibujarBoxPlot(chartCaja, resultados.PreciosFinales);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
         }
 
         private SimulationParameters LeerParametrosUI()
@@ -80,22 +111,22 @@ namespace MonteCarloSim
             void AddHeader(string t, Color c) { new Label { Parent = panelControles, Text = t, Top = yPos, AutoSize = true, Font = new Font("Segoe UI", 9, FontStyle.Bold), ForeColor = c }; yPos += 25; }
             void AddLabel(string t) { new Label { Parent = panelControles, Text = t, Top = yPos + 3, Left = 10, AutoSize = true, Font = new Font("Segoe UI", 8) }; }
 
-            AddHeader("1. DATOS DEL ACTIVO", Color.DarkSlateGray);
+            AddHeader("1.DATOS DEL ACTIVO", Color.DarkSlateGray);
             AddLabel("Capital Inicial ($):"); txtPrecio = new TextBox { Parent = panelControles, Text = "10000", Top = yPos, Left = 120, Width = 180 }; yPos += 30;
             AddLabel("Plazo:"); txtPlazo = new TextBox { Parent = panelControles, Text = "1", Top = yPos, Left = 120, Width = 50 }; cmbUnidadTiempo = new ComboBox { Parent = panelControles, Top = yPos, Left = 180, Width = 120, DropDownStyle = ComboBoxStyle.DropDownList, Font = new Font("Segoe UI", 9) }; cmbUnidadTiempo.Items.AddRange(new object[] { "Días", "Meses", "Años" }); cmbUnidadTiempo.SelectedIndex = 2; yPos += 35;
             AddLabel("Volatilidad (%):"); txtVolatilidad = new TextBox { Parent = panelControles, Text = "20", Top = yPos, Left = 120, Width = 80 }; cmbUnidadVol = new ComboBox { Parent = panelControles, Top = yPos, Left = 210, Width = 90, DropDownStyle = ComboBoxStyle.DropDownList, Font = new Font("Segoe UI", 9) }; cmbUnidadVol.Items.AddRange(new object[] { "Diaria", "Anual" }); cmbUnidadVol.SelectedIndex = 1; yPos += 30;
             AddLabel("Rendimiento (%):"); txtDeriva = new TextBox { Parent = panelControles, Text = "12", Top = yPos, Left = 120, Width = 80 }; cmbUnidadDeriva = new ComboBox { Parent = panelControles, Top = yPos, Left = 210, Width = 90, DropDownStyle = ComboBoxStyle.DropDownList, Font = new Font("Segoe UI", 9) }; cmbUnidadDeriva.Items.AddRange(new object[] { "Diaria", "Anual" }); cmbUnidadDeriva.SelectedIndex = 1; yPos += 45;
 
-            AddHeader("2. CONTEXTO ECONÓMICO", Color.DarkBlue);
+            AddHeader("2.CONTEXTO ECONOMICO", Color.DarkBlue);
             AddLabel("Tasa Segura (%):"); txtTasaLibre = new TextBox { Parent = panelControles, Text = "5", Top = yPos, Left = 120, Width = 180 }; yPos += 30;
             AddLabel("Inflación Est. (%):"); txtInflacion = new TextBox { Parent = panelControles, Text = "4", Top = yPos, Left = 120, Width = 180 }; yPos += 45;
 
-            AddHeader("3. MOTOR PARALELO", Color.DarkRed);
+            AddHeader("3.MOTOR PARALELO", Color.DarkRed);
             AddLabel("Escenarios:"); txtSimulaciones = new TextBox { Parent = panelControles, Text = "5000", Top = yPos, Left = 120, Width = 180 }; yPos += 30;
-            AddLabel("Núcleos CPU:"); numHilos = new NumericUpDown { Parent = panelControles, Top = yPos, Left = 120, Width = 180, Minimum = 1, Maximum = 64, Value = Environment.ProcessorCount }; yPos += 50;
+            AddLabel("Nucleos CPU:"); numHilos = new NumericUpDown { Parent = panelControles, Top = yPos, Left = 120, Width = 180, Minimum = 1, Maximum = 64, Value = Environment.ProcessorCount }; yPos += 50;
 
             btnSimular = new Button { Parent = panelControles, Text = "CALCULAR RIESGO", Top = yPos, Width = 300, Height = 50, BackColor = Color.RoyalBlue, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Font = new Font("Segoe UI", 11, FontStyle.Bold), Cursor = Cursors.Hand };
-            //btnSimular.Click += BtnSimular_Click; yPos += 60;
+            btnSimular.Click += BtnSimular_Click; yPos += 60;
 
             AddHeader("REPORTE FINANCIERO", Color.Black);
             rtbResultados = new RichTextBox { Parent = panelControles, Top = yPos, Left = 10, Width = 300, Height = 300, BorderStyle = BorderStyle.None, BackColor = Color.WhiteSmoke, ReadOnly = true, Text = "Esperando..." };
@@ -128,8 +159,5 @@ namespace MonteCarloSim
         }
 
     }
-
-
-
 
 }
