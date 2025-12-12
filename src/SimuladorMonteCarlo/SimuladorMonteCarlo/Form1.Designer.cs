@@ -1,16 +1,16 @@
-﻿namespace SimuladorMonteCarlo
+﻿namespace MonteCarloSim
 {
     partial class Form1
     {
         /// <summary>
-        ///  Required designer variable.
+        /// Variable del diseñador necesaria.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
         /// <summary>
-        ///  Clean up any resources being used.
+        /// Limpiar los recursos que se estén usando.
         /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        /// <param name="disposing">true si los recursos administrados se deben desechar; false en caso contrario.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,25 +20,25 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
+        #region Código generado por el Diseñador de Windows Forms
 
         /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
+        /// Método necesario para admitir el Diseñador. No se puede modificar
+        /// el contenido de este método con el editor de código.
         /// </summary>
         private void InitializeComponent()
         {
-            SuspendLayout();
+            this.SuspendLayout();
             // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
-            Name = "Form1";
-            Text = "Form1";
-            Load += Form1_Load;
-            ResumeLayout(false);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(770, 441);
+            this.Name = "Form1";
+            this.Text = "Form1";
+            this.ResumeLayout(false);
+
         }
 
         #endregion
