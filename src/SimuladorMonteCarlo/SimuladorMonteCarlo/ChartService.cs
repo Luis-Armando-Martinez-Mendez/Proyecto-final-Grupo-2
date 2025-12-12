@@ -122,3 +122,27 @@ public void DibujarPastel(Chart chart, double[] preciosFinales, double capitalIn
 
     chart.Series.Add(sPie);
 }
+
+public void DibujarBoxPlot(Chart chart, double[] preciosFinales)
+{
+    chart.Series.Clear();
+
+    double min = preciosFinales.Min();
+    double max = preciosFinales.Max();
+    double median = preciosFinales[preciosFinales.Length / 2];
+    double q1 = preciosFinales[preciosFinales.Length / 4];
+    double q3 = preciosFinales[(preciosFinales.Length * 3) / 4];
+
+    Series sBox = new Series("Rango")
+    {
+        ChartType = SeriesChartType.BoxPlot
+    };
+
+    DataPoint punto = new DataPoint();
+    punto.YValues = new double[] { min, max, q1, q3, 0, median };
+
+    sBox.Points.Add(punto);
+    sBox.Color = Color.Orange;
+
+    chart.Series.Add(sBox);
+}
