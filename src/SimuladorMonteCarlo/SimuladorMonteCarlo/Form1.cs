@@ -29,6 +29,41 @@ namespace MonteCarloSim
             //ConstruirInterfaz();
         }
 
+        private SimulationParameters LeerParametrosUI()
+        {
+            if (!double.TryParse(txtPrecio.Text, out double precio)) throw new Exception("Capital inicial inválido");
+            if (!int.TryParse(txtPlazo.Text, out int plazo)) throw new Exception("Plazo inválido");
+            if (!double.TryParse(txtVolatilidad.Text, out double volRaw)) throw new Exception("Volatilidad inválida");
+            if (!double.TryParse(txtDeriva.Text, out double derRaw)) throw new Exception("Rendimiento inválido");
+            if (!double.TryParse(txtTasaLibre.Text, out double tasaLibre)) throw new Exception("Tasa segura inválida");
+            if (!double.TryParse(txtInflacion.Text, out double inflacion)) throw new Exception("Inflación inválida");
+            if (!int.TryParse(txtSimulaciones.Text, out int nSim)) throw new Exception("Num simulaciones inválido");
+
+            int dias = 0;
+            string tiempo = cmbUnidadTiempo.SelectedItem.ToString();
+            if (tiempo == "Días") dias = plazo;
+            else if (tiempo == "Meses") dias = plazo * 21;
+            else dias = plazo * 252;
+
+            double volDiaria = (cmbUnidadVol.SelectedItem.ToString() == "Anual") ? (volRaw / 100.0) / Math.Sqrt(252) : volRaw / 100.0;
+            double derDiaria = (cmbUnidadDeriva.SelectedItem.ToString() == "Anual") ? (derRaw / 100.0) / 252.0 : derRaw / 100.0;
+            double tasaLibreDiaria = (tasaLibre / 100.0) / 252.0;
+            double tasaInflacionDiaria = Math.Pow(1 + (inflacion / 100.0), 1.0 / 252.0) - 1;
+
+            return new SimulationParameters
+            {
+                CapitalInicial = precio,
+                DiasTotales = dias,
+                VolatilidadDiaria = volDiaria,
+                DerivaDiaria = derDiaria,
+                NumeroSimulaciones = nSim,
+                TasaLibreDiaria = tasaLibreDiaria,
+                TasaInflacionDiaria = tasaInflacionDiaria,
+                InflacionInputTotal = inflacion,
+                Hilos = (int)numHilos.Value
+            };
+        }
+
         private void ConstruirInterfaz()
         {
             this.Size = new Size(1350, 900);
@@ -91,8 +126,6 @@ namespace MonteCarloSim
             c.Legends.Add(new Legend { Docking = Docking.Bottom });
             return c;
         }
-
-
 
     }
 
